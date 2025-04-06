@@ -1,95 +1,125 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Deeplink</title>
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             margin: 0;
-            padding: 20px;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            font-family: Arial, sans-serif;
+            padding: 10px;
+            min-height: 100vh;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
 
         .top-section {
             display: flex;
-            gap: 10px;
+            flex-direction: column;
+            gap: 12px;
             margin-bottom: 20px;
             padding: 15px;
             background-color: #f5f5f5;
             border-radius: 8px;
         }
 
+        @media (min-width: 768px) {
+            .top-section {
+                flex-direction: row;
+            }
+            .top-section input {
+                max-width: 300px;
+            }
+        }
+
         input {
-            padding: 8px;
+            width: 100%;
+            padding: 12px;
             border: 1px solid #ddd;
-            border-radius: 4px;
-            flex: 1;
+            border-radius: 8px;
+            font-size: 16px;
         }
 
         button {
-            padding: 8px 16px;
+            padding: 14px 20px;
             background-color: #4CAF50;
             color: white;
             border: none;
-            border-radius: 4px;
+            border-radius: 8px;
             cursor: pointer;
+            font-size: 16px;
+            transition: opacity 0.2s;
+            -webkit-tap-highlight-color: transparent;
         }
 
-        button:hover {
-            background-color: #45a049;
+        button:active {
+            opacity: 0.8;
         }
 
         .link-list {
-            flex: 1;
             display: flex;
             flex-direction: column;
-            gap: 10px;
-            overflow-y: auto;
+            gap: 12px;
         }
 
         .link-item {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px;
+            flex-direction: column;
+            padding: 16px;
             background-color: #fff;
-            border: 1px solid #eee;
-            border-radius: 4px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
         }
 
-        .link-item span:first-child {
-            font-weight: bold;
-            margin-right: 15px;
+        @media (min-width: 480px) {
+            .link-item {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+            }
         }
 
-        a {
-            color: #0066cc;
+        .link-item span {
+            font-weight: 500;
+            margin-bottom: 8px;
+            font-size: 16px;
+            color: #333;
+        }
+
+        .link-item a {
+            color: #007AFF;
             text-decoration: none;
             word-break: break-all;
+            font-size: 14px;
+            line-height: 1.4;
         }
 
-        a:hover {
-            text-decoration: underline;
+        .link-item a:active {
+            opacity: 0.7;
+        }
+
+        a, button {
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        input[type="text"] {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
         }
     </style>
 </head>
-
 <body>
     <div class="top-section">
-        <input type="text" id="nameInput" placeholder="Enter deeplink name">
-        <input type="text" id="urlInput" placeholder="Enter deeplink URL">
+        <input type="text" id="nameInput" placeholder="Deeplink name" autocapitalize="none">
+        <input type="text" id="urlInput" placeholder="Deeplink URL" autocapitalize="none">
         <button onclick="addLink()">Add</button>
     </div>
-
-    <div class="link-list" id="linkList">
-        <!-- Link items will be added here dynamically -->
-    </div>
+    
+    <div class="link-list" id="linkList"></div>
 
     <script>
         function addLink() {
@@ -99,25 +129,54 @@
 
             const name = nameInput.value.trim();
             const url = urlInput.value.trim();
-        
+
             if (!name || !url) {
                 alert('Please fill in both fields');
+                return;
+            }
+
+            if (!isValidUrl(url)) {
+                alert('Please enter a valid URL\nExample: https://example.com');
                 return;
             }
 
             const linkItem = document.createElement('div');
             linkItem.className = 'link-item';
             linkItem.innerHTML = `
-                <span>${name}</span>
-                <a href="${url}" target="_blank">${url}</a>
+                <span>${sanitizeHTML(name)}</span>
+                <a href="${sanitizeHTML(url)}" target="_blank">${sanitizeHTML(url)}</a>
             `;
 
-            linkList.appendChild(linkItem);
+            linkList.prepend(linkItem);
 
             nameInput.value = '';
             urlInput.value = '';
+            nameInput.focus();
         }
+
+        function isValidUrl(url) {
+            try {
+                new URL(url);
+                return true;
+            } catch {
+                return false;
+            }
+        }
+
+        function sanitizeHTML(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const inputs = document.querySelectorAll('input');
+            inputs.forEach(input => {
+                input.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') addLink();
+                });
+            });
+        });
     </script>
 </body>
-
 </html>
