@@ -97,17 +97,14 @@
             const urlInput = document.getElementById('urlInput');
             const linkList = document.getElementById('linkList');
 
-            // 获取输入值并去除首尾空格
             const name = nameInput.value.trim();
             const url = urlInput.value.trim();
-
-            // 简单验证输入是否为空
+        
             if (!name || !url) {
                 alert('Please fill in both fields');
                 return;
             }
 
-            // 创建新条目
             const linkItem = document.createElement('div');
             linkItem.className = 'link-item';
             linkItem.innerHTML = `
@@ -115,10 +112,8 @@
                 <a href="${url}" target="_blank">${url}</a>
             `;
 
-            // 添加条目到列表
             linkList.appendChild(linkItem);
 
-            // 清空输入框
             nameInput.value = '';
             urlInput.value = '';
         }
