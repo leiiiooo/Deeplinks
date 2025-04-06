@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deeplink</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            font-family: Arial, sans-serif;
+        }
+
+        .top-section {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f5f5f5;
+            border-radius: 8px;
+        }
+
+        input {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            flex: 1;
+        }
+
+        button {
+            padding: 8px 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .link-list {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            overflow-y: auto;
+        }
+
+        .link-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            background-color: #fff;
+            border: 1px solid #eee;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .link-item span:first-child {
+            font-weight: bold;
+            margin-right: 15px;
+        }
+
+        a {
+            color: #0066cc;
+            text-decoration: none;
+            word-break: break-all;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="top-section">
+        <input type="text" id="nameInput" placeholder="Enter deeplink name">
+        <input type="text" id="urlInput" placeholder="Enter deeplink URL">
+        <button onclick="addLink()">Add</button>
+    </div>
+
+    <div class="link-list" id="linkList">
+        <!-- Link items will be added here dynamically -->
+    </div>
+
+    <script>
+        function addLink() {
+            const nameInput = document.getElementById('nameInput');
+            const urlInput = document.getElementById('urlInput');
+            const linkList = document.getElementById('linkList');
+
+            // 获取输入值并去除首尾空格
+            const name = nameInput.value.trim();
+            const url = urlInput.value.trim();
+
+            // 简单验证输入是否为空
+            if (!name || !url) {
+                alert('Please fill in both fields');
+                return;
+            }
+
+            // 创建新条目
+            const linkItem = document.createElement('div');
+            linkItem.className = 'link-item';
+            linkItem.innerHTML = `
+                <span>${name}</span>
+                <a href="${url}" target="_blank">${url}</a>
+            `;
+
+            // 添加条目到列表
+            linkList.appendChild(linkItem);
+
+            // 清空输入框
+            nameInput.value = '';
+            urlInput.value = '';
+        }
+    </script>
+</body>
+
+</html>
